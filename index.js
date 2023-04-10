@@ -1,13 +1,13 @@
-import { http } from "@ampt/sdk";
+import { http, params } from "@ampt/sdk";
 import express, { Router } from "express";
 import env from "dotenv";
 import mysql from "mysql2";
+import morgan from "morgan";
 import swaggerJSDoc from "swagger-jsdoc"; // TODO: Add Swagger UI
 env.config();
 
 const port = process.env.PORT || 3000;
 const domain = process.env.DOMAIN || "localhost";
-console.log(`Listening on ${domain}:${port}`);
 const app = express();
 
 // Create connection to database
@@ -49,12 +49,15 @@ publicApi.get("/", (req, res) => {
 publicApi.get("/partiler", (req, res) => {
   let parti = req.query.name;
 
-  let data_query = `SELECT * FROM partiler`;
+  let data_query = "SELECT * FROM partiler";
+  const params = [];
+
   if (parti) {
-    data_query += ` WHERE partiler.party_name LIKE '%${parti}%' `;
+    data_query += " WHERE party_name LIKE ?";
+    params.push(`%${parti}%`);
   }
 
-  connection.query(data_query, function (err, rows, fields) {
+  connection.query(data_query, params, function (err, rows, fields) {
     if (err) throw err;
 
     res.send(rows);
@@ -65,8 +68,11 @@ publicApi.get("/partiler/:parti_id", (req, res) => {
   let parti_id = req.params.parti_id;
   parti_id = parseInt(parti_id);
 
+  const params = [parti_id];
+
   connection.query(
-    `SELECT * FROM partiler WHERE partiler.id = ${parti_id}`,
+    `SELECT * FROM partiler WHERE partiler.id = ?`,
+    params,
     function (err, rows, fields) {
       if (err) throw err;
 
@@ -78,12 +84,15 @@ publicApi.get("/partiler/:parti_id", (req, res) => {
 publicApi.get("/sehirler", (req, res) => {
   let sehir = req.query.name;
 
-  let data_query = `SELECT * FROM sehirler`;
+  let data_query = "SELECT * FROM sehirler";
+  const params = [];
+
   if (sehir) {
-    data_query += ` WHERE sehirler.area_name LIKE '%${sehir}%' `;
+    data_query += " WHERE city_name LIKE ?";
+    params.push(`%${sehir}%`);
   }
 
-  connection.query(data_query, function (err, rows, fields) {
+  connection.query(data_query, params, function (err, rows, fields) {
     if (err) throw err;
 
     res.send(rows);
@@ -94,8 +103,11 @@ publicApi.get("/sehirler/:sehir_id", (req, res) => {
   let sehir_id = req.params.sehir_id;
   sehir_id = parseInt(sehir_id);
 
+  const params = [sehir_id];
+
   connection.query(
-    `SELECT * FROM sehirler WHERE sehirler.id = ${sehir_id}`,
+    `SELECT * FROM sehirler WHERE sehirler.id = ?`,
+    params,
     function (err, rows, fields) {
       if (err) throw err;
 
@@ -107,8 +119,12 @@ publicApi.get("/sehirler/:sehir_id", (req, res) => {
 publicApi.get("/secim/:secim_id", (req, res) => {
   let secim_id = req.params.secim_id;
   secim_id = parseInt(secim_id);
+
+  const params = [secim_id];
+
   connection.query(
-    `SELECT * FROM adaylar WHERE adaylar.election_id = ${secim_id}`,
+    `SELECT * FROM adaylar WHERE adaylar.election_id = ?`,
+    params,
     function (err, rows, fields) {
       if (err) throw err;
 
@@ -124,8 +140,11 @@ publicApi.get("/secim/:secim_id/parti/:parti_id", (req, res) => {
   secim_id = parseInt(secim_id);
   parti_id = parseInt(parti_id);
 
+  const params = [secim_id, parti_id];
+
   connection.query(
-    `SELECT * FROM adaylar WHERE adaylar.election_id = ${secim_id} AND adaylar.party_id = ${parti_id}`,
+    `SELECT * FROM adaylar WHERE adaylar.election_id = ? AND adaylar.party_id = ?`,
+    params,
     function (err, rows, fields) {
       if (err) throw err;
 
@@ -144,21 +163,19 @@ publicApi.get(
     secim_id = parseInt(secim_id);
     parti_id = parseInt(parti_id);
     sehir_id = parseInt(sehir_id);
+    let order_filter = "candidate_id";
 
-    let order = "candidate_id";
-    let data_query = `
-      SELECT * FROM adaylar 
-      WHERE adaylar.election_id = ${secim_id} AND adaylar.party_id = ${parti_id} AND adaylar.area_id = ${sehir_id} 
-      ORDER BY adaylar.${order} ASC
-    `;
+    const params = [secim_id, parti_id, sehir_id, order_filter];
 
-    connection.query(data_query, function (err, rows, fields) {
-      if (err) {
-        throw err;
+    connection.query(
+      `SELECT * FROM adaylar WHERE adaylar.election_id = ? AND adaylar.party_id = ? AND adaylar.area_id = ? ORDER BY ?`,
+      params,
+      function (err, rows, fields) {
+        if (err) throw err;
+
+        res.send(rows);
       }
-
-      res.send(rows);
-    });
+    );
   }
 );
 
@@ -170,8 +187,11 @@ publicApi.get("/secim/:secim_id/sehir/:sehir_id", (req, res) => {
   secim_id = parseInt(secim_id);
   sehir_id = parseInt(sehir_id);
 
+  const params = [secim_id, sehir_id];
+
   connection.query(
-    `SELECT * FROM adaylar WHERE adaylar.election_id = ${secim_id} AND adaylar.area_id = ${sehir_id}`,
+    `SELECT * FROM adaylar WHERE adaylar.election_id = ? AND adaylar.area_id = ?`,
+    params,
     function (err, rows, fields) {
       if (err) throw err;
 
@@ -190,9 +210,12 @@ publicApi.get(
     secim_id = parseInt(secim_id);
     sehir_id = parseInt(sehir_id);
     parti_id = parseInt(parti_id);
+    let order_filter = "candidate_id";
+    const params = [secim_id, sehir_id, parti_id, order_filter];
 
     connection.query(
-      `SELECT * FROM adaylar WHERE adaylar.election_id = ${secim_id} AND adaylar.area_id = ${sehir_id} AND adaylar.party_id = ${parti_id}`,
+      `SELECT * FROM adaylar WHERE adaylar.election_id = ? AND adaylar.area_id = ? AND adaylar.party_id = ? ORDER BY ?`,
+      params,
       function (err, rows, fields) {
         if (err) throw err;
 
@@ -208,8 +231,11 @@ publicApi.get("/secim/:secim_id/sehir", (req, res) => {
 
   secim_id = parseInt(secim_id);
 
+  const params = [secim_id, sehir];
+
   connection.query(
-    `SELECT * FROM adaylar WHERE adaylar.election_id = ${secim_id} AND adaylar.area_name LIKE '%${sehir}%'`,
+    `SELECT * FROM adaylar WHERE adaylar.election_id = ? AND adaylar.area_name LIKE ?`,
+    params,
     function (err, rows, fields) {
       if (err) throw err;
 
@@ -227,8 +253,11 @@ publicApi.get("/secim/:secim_id/parti/:parti_id", (req, res) => {
   secim_id = parseInt(secim_id);
   parti_id = parseInt(parti_id);
 
+  const params = [secim_id, parti_id];
+
   connection.query(
-    `SELECT * FROM adaylar WHERE adaylar.election_id = ${secim_id} AND adaylar.party_id = ${parti_id}`,
+    `SELECT * FROM adaylar WHERE adaylar.election_id = ? AND adaylar.party_id = ?`,
+    params,
     function (err, rows, fields) {
       if (err) throw err;
 
@@ -243,9 +272,11 @@ publicApi.get("/secim/:secim_id/isim/:isim", (req, res) => {
   let isim = req.params.isim;
 
   secim_id = parseInt(secim_id);
+  const params = [secim_id, isim];
 
   connection.query(
-    `SELECT * FROM adaylar WHERE adaylar.election_id = ${secim_id} AND adaylar.candidate_name LIKE '%${isim}%'`,
+    `SELECT * FROM adaylar WHERE adaylar.election_id = ? AND adaylar.name LIKE ?`,
+    params,
     function (err, rows, fields) {
       if (err) throw err;
 
@@ -260,8 +291,11 @@ publicApi.get("/secim/:secim_id/soyisim/:soyisim", (req, res) => {
 
   secim_id = parseInt(secim_id);
 
+  const params = [secim_id, soyisim];
+
   connection.query(
-    `SELECT * FROM adaylar WHERE adaylar.election_id = ${secim_id} AND adaylar.surname LIKE '%${soyisim}%'`,
+    `SELECT * FROM adaylar WHERE adaylar.election_id = ? AND adaylar.surname LIKE ?`,
+    params,
     function (err, rows, fields) {
       if (err) throw err;
 
@@ -277,8 +311,11 @@ publicApi.get("/secim/:secim_id/isim/:isim/soyisim/:soyisim", (req, res) => {
 
   secim_id = parseInt(secim_id);
 
+  const params = [secim_id, isim, soyisim];
+
   connection.query(
-    `SELECT * FROM adaylar WHERE adaylar.election_id = ${secim_id} AND adaylar.candidate_name LIKE '%${isim}%' AND adaylar.surname LIKE '%${soyisim}%'`,
+    `SELECT * FROM adaylar WHERE adaylar.election_id = ? AND adaylar.name LIKE ? AND adaylar.surname LIKE ?`,
+    params,
     function (err, rows, fields) {
       if (err) throw err;
 
@@ -287,6 +324,7 @@ publicApi.get("/secim/:secim_id/isim/:isim/soyisim/:soyisim", (req, res) => {
   );
 });
 
+app.use(morgan("tiny"));
 app.use("/", rootApi);
 app.use("/api", publicApi);
 app.use("/admin", privateApi);
