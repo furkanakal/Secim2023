@@ -1,4 +1,4 @@
-import { http, params } from "@ampt/sdk";
+import { http } from "@ampt/sdk";
 import express, { Router } from "express";
 import env from "dotenv";
 import mysql from "mysql2";
