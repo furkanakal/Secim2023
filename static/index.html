@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Fontfabric muller", sans-serif;
+        color: #000;
+        background: #fff;
+      }
+
+      header {
+        background-color: #000;
+        padding-top: 1em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      header img {
+        width: 20%;
+      }
+
+      ul {
+        list-style-type: none;
+      }
+
+      section {
+        font-size: 1.4em;
+        padding: 0 20%;
+        text-align: center;
+      }
+
+      .framework {
+        background: #fff;
+        padding-top: 100px;
+        padding-bottom: 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      footer {
+        font-size: 1em;
+      }
+
+      .command {
+        color: rgb(253, 87, 80);
+        text-emphasis: bold;
+      }
+
+      a,
+      a:visited {
+        color: #999;
+      }
+
+      .intro {
+        min-height: 80vh;
+        margin: 0 10%;
+      }
+
+      .heart {
+        display: block;
+        height: 75px;
+        font-size: 6em;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      li {
+        margin-bottom: 10px;
+      }
+    </style>
+    <title>Seçim 2023 API</title>
+  </head>
+
+  <body>
+    <header>
+      <img src="https://getampt.com/images/ampt.svg" />
+      <div class="heart">❤️</div>
+    </header>
+    <section class="framework">
+      <h1>Seçim 2023 API</h1>
+    </section>
+    <section class="intro">
+      <h3> Endpoint Listesi</h3>
+      <ul>
+        <li>
+          <strong>Seçim:</strong>
+          <ul>
+            <li>
+              <a href="https://www.secim2023.dev/api/secim/28"
+                >api/secim/:secim_id</a
+              >
+            </li>
+            <li>
+              <a href="https://www.secim2023.dev/api/secim/28/isim/Muhammed"
+                >api/secim/:secim_id/isim/:isim</a
+              >
+            </li>
+            <li>
+              <a href="https://www.secim2023.dev/api/secim/28/parti/2"
+                >api/secim/:secim_id/parti/:parti_id</a
+              >
+            </li>
+            <li>
+              <a href="https://www.secim2023.dev/api/secim/28/parti/2/sehir/43"
+                >api/secim/:secim_id/parti/:parti_id/sehir/:sehir_id</a
+              >
+            </li>
+            <li>
+              <a href="https://www.secim2023.dev/api/secim/28/sehir/43"
+                >api/secim/:secim_id/sehir/:sehir_id</a
+              >
+            </li>
+            <li>
+              <a href="https://www.secim2023.dev/api/secim/28/sehir/43/parti/2"
+                >api/secim/:secim_id/sehir/:sehir_id/parti/:parti_id</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.secim2023.dev/api/secim/28/sehir?name=İstanbul"
+                >api/secim/:secim_id/sehir?name=:sehir_adi</a
+              >
+            </li>
+            <li>
+              <a href="https://www.secim2023.dev/api/secim/28/soyisim/Şamdan"
+                >api/secim/:secim_id/soyisim/:soyisim</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.secim2023.dev/api/secim/28/isim/Gökhan/soyisim/Zan"
+                >api/secim/:secim_id/isim/:isim/soyisim/:soyisim</a
+              >
+            </li>
+          </ul>
+        </li>
+      </br>
+      <li>
+        <strong>Parti:</strong>
+        <ul>
+          <li>
+            <a href="https://www.secim2023.dev/api/partiler">api/partiler</a>
+          </li>
+          <li>
+            <a href="https://www.secim2023.dev/api/parti/2"
+              >api/parti/:parti_id</a
+            >
+          </li>
+          <li>
+            <a href="https://www.secim2023.dev/api/partiler?name=Halk"
+              >api/partiler?name=:parti_adi</a
+            >
+          </li>
+        </ul>
+      </li>
+    </br>
+        <li>
+          <strong>Şehir:</strong>
+          <ul>
+            <li>
+              <a href="https://www.secim2023.dev/api/sehirler">api/sehirler</a>
+            </li>
+            <li>
+              <a href="https://www.secim2023.dev/api/sehir/34"
+                >api/sehir/:sehir_id</a
+              >
+            </li>
+            <li>
+              <a href="https://www.secim2023.dev/api/sehirler?name=İstanbul"
+                >api/sehirler?name=:sehir_adi</a
+              >
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p>
+        Check out the GitHub repository for this project: <br />
+        <a href="https://github.com/kiliczsh/Secim2023">Seçim 2023 API</a>
+      </p>
+      <footer>
+        <p>
+          For more details, explore the
+          <a href="https://github.com/getampt/docs">documentation</a>
+          and join our
+          <a href="https://discord.gg/v2FG8KY2mS">Discord</a>
+          for questions, comments, or concerns.
+        </p>
+        <p>Happy coding!</p>
+      </footer>
+    </section>
+  </body>
+</html>
